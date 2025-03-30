@@ -13,7 +13,8 @@ void servo_init()
     
     gpio_set_function(SERVOMOTOR_PULSE_PIN, GPIO_FUNC_PWM);
     pwm_init(pwm_gpio_to_slice_num(SERVOMOTOR_PULSE_PIN), &config, true);
-    pwm_set_gpio_level(SERVOMOTOR_PULSE_PIN, 0);
+
+    servo_set_angle(0);
 }
 
 void servo_set_angle(uint8_t angle)
