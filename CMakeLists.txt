@@ -16,6 +16,9 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 add_library(servomotor servomotor.c)
 target_link_libraries(servomotor hardware_pwm hardware_gpio)
 
+add_library(ultrasonic ultrasonic.c)
+target_link_libraries(ultrasonic hardware_gpio pico_stdlib pico_time)
+
 add_subdirectory(test)
 
 #add_executable(pico-servo-ultrasonic main.c)
