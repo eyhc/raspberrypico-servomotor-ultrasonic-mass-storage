@@ -19,6 +19,9 @@ target_link_libraries(servomotor hardware_pwm hardware_gpio)
 add_library(ultrasonic ultrasonic.c)
 target_link_libraries(ultrasonic hardware_gpio pico_stdlib pico_time)
 
+add_library(config config.c)
+target_link_libraries(config hardware_flash pico_stdlib pico_flash)
+
 add_subdirectory(test)
 
 #add_executable(pico-servo-ultrasonic main.c)

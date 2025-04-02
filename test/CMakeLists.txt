@@ -7,3 +7,8 @@ add_executable(test-ultrasonic test_ultrasonic.c)
 target_link_libraries(test-ultrasonic ultrasonic pico_stdlib)
 pico_enable_stdio_usb(test-ultrasonic 1)
 pico_add_extra_outputs(test-ultrasonic)
+
+add_executable(test-config test_config.c)
+target_link_libraries(test-config config pico_stdlib)
+pico_enable_stdio_usb(test-config 1)
+pico_add_extra_outputs(test-config)

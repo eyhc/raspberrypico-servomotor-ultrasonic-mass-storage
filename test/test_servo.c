@@ -4,8 +4,7 @@
 #include "../servomotor.h"
 
 
-int main(int argc, char const *argv[])
-{
+int main() {
     uint8_t increase = 1;
     uint8_t angle = 0;
 
