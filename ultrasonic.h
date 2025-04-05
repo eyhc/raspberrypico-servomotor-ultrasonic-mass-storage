@@ -8,6 +8,6 @@
 
 void ultrasonic_init();
 
-float get_distance_ultrasonic(uint32_t timeout);
+float get_distance_ultrasonic(uint32_t timeout_us);
 
 #endif

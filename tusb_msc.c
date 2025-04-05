@@ -1,9 +1,17 @@
 #include "tusb.h"
 #include "ff.h"
 #include "diskio.h"
+#include "tusb_msc.h"
 
 // whether host does safe-eject
 static bool ejected = false;
+
+
+// callback function
+static event_cb *cb_fct = NULL;
+void usb_set_callback(event_cb *f) {
+    cb_fct = f;
+}
 
 
 // Invoked when received SCSI_CMD_INQUIRY
@@ -89,6 +97,12 @@ int32_t tud_msc_read10_cb(
 
     memcpy(buffer, temp_buffer + offset, bufsize);
 
+    // reading callback
+    if (cb_fct) {
+        event e = {.type=READ_CALL, .lun=lun, .lba=lba, .offset=offset, .bufsize=bufsize};
+        (*cb_fct)(e);
+    }
+
     return (int32_t) bufsize;
 }
 
@@ -123,6 +137,12 @@ int32_t tud_msc_write10_cb(
 
     res = disk_write(0, temp_buffer, lba, 1);
     if (res != RES_OK) return -1;
+
+    // writing callback
+    if (cb_fct) {
+        event e = {.type=WRITE_CALL, .lun=lun, .lba=lba, .offset=offset, .bufsize=bufsize};
+        (*cb_fct)(e);
+    }
     
     return (int32_t) bufsize;
 }

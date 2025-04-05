@@ -11,6 +11,7 @@ typedef struct {
     uint8_t snd_angle;
     uint16_t switch_angle_delay_ms;
     float threshold_distance;
+    uint16_t time_between_measures_ms;
 } config;
 
 extern const config default_config;

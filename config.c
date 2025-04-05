@@ -13,18 +13,20 @@ const config default_config = {
     .magic_word = MAGIC_WORD,
     .fst_angle = 20,
     .snd_angle = 160,
-    .switch_angle_delay_ms = 300,
-    .threshold_distance = 20.f
+    .switch_angle_delay_ms = 2000,
+    .threshold_distance = 20.f,
+    .time_between_measures_ms = 10000
 };
 
 void print_config(const config *conf) {
     printf(
-        "config: mw=0x%X alpha1=%u alpha2=%u delay_ms=%u thres=%.2f\n",
+        "config: mw=0x%X alpha1=%u alpha2=%u switch_delay_ms=%u thres=%.2f, time_delay_ms=%u\n",
         conf->magic_word,
         conf->fst_angle,
         conf->snd_angle,
         conf->switch_angle_delay_ms,
-        conf->threshold_distance
+        conf->threshold_distance,
+        conf->time_between_measures_ms
     );
 }
 
@@ -35,19 +37,21 @@ bool is_valid_magic_word(const config *conf) {
 bool is_correct_config(const config *conf) {
     return is_valid_magic_word(conf) && 
             conf->fst_angle < conf->snd_angle &&
-            conf->snd_angle < 180 &&
-            conf->snd_angle - conf->fst_angle >= 10 &&
+            conf->snd_angle <= 180 &&
+            (conf->snd_angle - conf->fst_angle) >= 10 &&
             conf->switch_angle_delay_ms >= 100 &&
             conf->switch_angle_delay_ms < 5000 &&
             conf->threshold_distance > 2.f &&
-            conf->threshold_distance < 100.f;
+            conf->threshold_distance < 100.f &&
+            conf->time_between_measures_ms > conf->switch_angle_delay_ms;
 }
 
 bool equals_config(const config *c1, const config *c2) {
     return c1->fst_angle == c2->fst_angle &&
             c1->snd_angle == c2->snd_angle &&
             c1->switch_angle_delay_ms == c2->switch_angle_delay_ms &&
-            c1->threshold_distance == c2->threshold_distance;
+            c1->threshold_distance == c2->threshold_distance &&
+            c1->time_between_measures_ms == c2->time_between_measures_ms;
 }
 
 
@@ -121,16 +125,18 @@ void write_config_flash(const config *conf, uint32_t flash_offset) {
  */
 
 static char ini_string_fmt[] = "\
-# Fichier de configuration du projet with a servomotor and a ultrasonic sensor\n\
+# Config file of project with servo and ultrasonic sensor\n\
 \n[servomotor]\n\
-# Les angles sont compris entre 0 et 180 ° !\n\
+# The angles must be between 0 and 180 ° and angle1 < angle2\n\
 fst_angle = %u\n\
 snd_angle = %u\n\
-# Delai entre le passage d'un angle à l'autre en (ms) entre 100 et 5000\n\
+# Time from one angle to another in ms between 100 and 5000\n\
 switch_angle_delay_ms = %u\n\
 \n[ultrasonic]\n\
-# threshold_distance entre 2 et 100 !\n\
+# threshold distance between 2 and 100 cm\n\
 threshold_distance = %f\n\
+# time in ms between measures must be greater than switch_angle_delay_ms\n\
+time_between_measures_ms = %u\
 ";
 
 void write_ini_config(const config *conf, FIL *fp) {
@@ -139,7 +145,8 @@ void write_ini_config(const config *conf, FIL *fp) {
         conf->fst_angle,
         conf->snd_angle,
         conf->switch_angle_delay_ms,
-        conf->threshold_distance
+        conf->threshold_distance,
+        conf->time_between_measures_ms
     );
 
     size_t len = strlen(temp);
@@ -191,6 +198,9 @@ int handler(void *user, const char *section, const char *name, const char *value
     }
     else if (MATCH("ultrasonic", "threshold_distance")) {
         conf->threshold_distance = atof(value);
+    }
+    else if (MATCH("ultrasonic", "time_between_measures_ms")) {
+        conf->time_between_measures_ms = atoi(value);
     }
     return 1;
 }

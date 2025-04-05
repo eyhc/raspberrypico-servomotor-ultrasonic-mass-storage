@@ -1,5 +1,4 @@
-#include "ff.h"
-#include "diskio.h"
+#include "ram_disk.h"
 #include <string.h>
 #include <stdio.h>
 
@@ -155,8 +154,6 @@ DRESULT disk_read (
 	LBA_t sector,   /* Start sector in LBA */
 	UINT count      /* Number of sectors to read */
 ) {
-    printf("READ sector %u, count = %u\n", sector, count);
-
     // out of ramdisk
     if (sector + count > VIRT_DISK_BLOCK_NUM) {
         return RES_PARERR;
@@ -182,8 +179,6 @@ DRESULT disk_write (
 	UINT count			/* Number of sectors to write */
 )
 {
-    printf("WRITE sector %u, count = %u\n", sector, count);
-
     // out of ramdisk
     if (sector + count > VIRT_DISK_BLOCK_NUM) {
         return RES_PARERR;
