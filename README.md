@@ -9,7 +9,7 @@ Servomotor controlled by ultrasonic sensor and configurable via USB Mass Storage
 
 ```sh
 git submodule update --init 
-cd pico_sdk
+cd pico-sdk
 git submodule update --init 
 cd ..
 mkdir build
@@ -25,3 +25,12 @@ make
 - the controller will be recognized as a USB storage device
 - copy the file main.uf2 or test-*.uf2 on the root of this USB storage device
 - the firmware is now flashed and starts/boots
+
+## Resources
+
+  - https://www.overleaf.com/read/kbxggsdyydsm#3743ae
+  - https://www.raspberrypi.com/documentation/microcontrollers/pico-series.html
+  - https://academy.cba.mit.edu/classes/networking_communications/SD/FAT.pdf
+  - https://docs.tinyusb.org/en/latest/
+  - http://elm-chan.org/fsw/ff/ and https://github.com/abbrev/fatfs
+  - https://github.com/benhoyt/inih
