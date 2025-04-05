@@ -1,7 +1,11 @@
 #include "config.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "hardware/flash.h"
 #include "pico/flash.h"
-#include <stdio.h>
+#include "inih/ini.h"
 
 #define MAGIC_WORD 0xEC25
 
@@ -108,4 +112,94 @@ void write_config_flash(const config *conf, uint32_t flash_offset) {
     struct _flash_program_conf_args param = {flash_offset, conf};
     rc = flash_safe_execute(_call_flash_program_config, &param, UINT32_MAX);
     hard_assert(rc == PICO_OK);
+}
+
+
+
+/***********************************
+ *        INI FILE OUTPUT
+ */
+
+static char ini_string_fmt[] = "\
+# Fichier de configuration du projet with a servomotor and a ultrasonic sensor\n\
+\n[servomotor]\n\
+# Les angles sont compris entre 0 et 180 ° !\n\
+fst_angle = %u\n\
+snd_angle = %u\n\
+# Delai entre le passage d'un angle à l'autre en (ms) entre 100 et 5000\n\
+switch_angle_delay_ms = %u\n\
+\n[ultrasonic]\n\
+# threshold_distance entre 2 et 100 !\n\
+threshold_distance = %f\n\
+";
+
+void write_ini_config(const config *conf, FIL *fp) {
+    char temp[2 * sizeof(ini_string_fmt)];
+    sprintf(temp, ini_string_fmt, 
+        conf->fst_angle,
+        conf->snd_angle,
+        conf->switch_angle_delay_ms,
+        conf->threshold_distance
+    );
+
+    size_t len = strlen(temp);
+
+    unsigned int bw;
+    f_write(fp, temp, len, &bw);
+}
+
+
+/***********************************
+ *        INI FILE INPUT
+ */
+char *ini_reader_fil(char *str, int num, void* stream) {
+    FIL *fp = (FIL*) stream;
+    int nc = 0;
+    char *p = str;
+    char c;
+    UINT rc;
+
+	/* Byte-by-byte read */
+	num -= 1;	/* Make a room for the terminator */
+	while (nc < num) {
+		f_read(fp, &c, 1, &rc);	/* Get a byte */
+		if (rc != 1) break;		/* EOF? */
+		if (c == '\r') continue;
+		
+        *p++ = c;
+        nc++;
+
+        if (c == '\n') break;
+	}
+
+	*p = 0;		/* Terminate the string */
+	return nc ? str : NULL;
+}
+
+int handler(void *user, const char *section, const char *name, const char *value) {
+    config *conf = (config*) user;
+
+    #define MATCH(s, n) strcmp(section, s) == 0 && strcmp(name, n) == 0
+    if (MATCH("servomotor", "fst_angle")) {
+        conf->fst_angle = atoi(value);
+    }
+    else if (MATCH("servomotor", "snd_angle")) {
+        conf->snd_angle = atoi(value);
+    }
+    else if (MATCH("servomotor", "switch_angle_delay_ms")) {
+        conf->switch_angle_delay_ms = atoi(value);
+    }
+    else if (MATCH("ultrasonic", "threshold_distance")) {
+        conf->threshold_distance = atof(value);
+    }
+    return 1;
+}
+
+config read_ini_config(FIL *fp) {
+    config conf;
+    conf.magic_word = MAGIC_WORD;
+
+    ini_parse_stream((ini_reader) ini_reader_fil, fp, (ini_handler)handler, &conf);
+
+    return conf;
 }

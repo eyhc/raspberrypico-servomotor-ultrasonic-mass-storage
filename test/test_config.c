@@ -1,7 +1,7 @@
-#include "config.h"
 #include "stdio.h"
 #include "pico/stdlib.h"
 #include "hardware/flash.h"
+#include "../config.h"
 
 // We'll use a region 64k from the start of flash.
 #define CONFIG_OFFSET (16 * FLASH_SECTOR_SIZE)

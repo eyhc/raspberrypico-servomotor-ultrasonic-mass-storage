@@ -3,9 +3,9 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include "ff.h"
 
-typedef struct
-{
+typedef struct {
     uint16_t magic_word;
     uint8_t fst_angle;
     uint8_t snd_angle;
@@ -27,5 +27,11 @@ void init_config_flash(uint32_t offset);
 config read_config_flash(uint32_t offset);
 // caution: 4096 (FLASH_SECTOR_SIZE) bytes from offset will be erased
 void write_config_flash(const config *conf, uint32_t offset);
+
+
+// --- FILE API ---
+
+void write_ini_config(const config *conf, FIL *fp);
+config read_ini_config(FIL *fp);
 
 #endif
