@@ -28,10 +28,10 @@ make
 
 ## Resources
 
-  - https://www.overleaf.com/read/kbxggsdyydsm#3743ae
-  - https://www.raspberrypi.com/documentation/microcontrollers/pico-series.html
-  - https://academy.cba.mit.edu/classes/networking_communications/SD/FAT.pdf
-  - https://docs.tinyusb.org/en/latest/
-  - https://www.keil.com/pack/doc/mw/USB/html/_u_s_b__descriptors.html
-  - http://elm-chan.org/fsw/ff/ and https://github.com/abbrev/fatfs
-  - https://github.com/benhoyt/inih
+  - Slides:   https://www.overleaf.com/read/kbxggsdyydsm#3743ae
+  - Pico doc: https://www.raspberrypi.com/documentation/microcontrollers/pico-series.html
+  - FAT:      https://academy.cba.mit.edu/classes/networking_communications/SD/FAT.pdf
+  - TinyUSB:  https://docs.tinyusb.org/en/latest/
+  - USB doc:  https://www.keil.com/pack/doc/mw/USB/html/_u_s_b__descriptors.html
+  - FatFS:    http://elm-chan.org/fsw/ff/ and https://github.com/abbrev/fatfs
+  - inih lib: https://github.com/benhoyt/inih
