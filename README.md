@@ -32,5 +32,6 @@ make
   - https://www.raspberrypi.com/documentation/microcontrollers/pico-series.html
   - https://academy.cba.mit.edu/classes/networking_communications/SD/FAT.pdf
   - https://docs.tinyusb.org/en/latest/
+  - https://www.keil.com/pack/doc/mw/USB/html/_u_s_b__descriptors.html
   - http://elm-chan.org/fsw/ff/ and https://github.com/abbrev/fatfs
   - https://github.com/benhoyt/inih
