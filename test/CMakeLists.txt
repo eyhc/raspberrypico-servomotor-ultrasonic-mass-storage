@@ -14,6 +14,7 @@ pico_sdk_init()
 
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
+    ${PICO_SDK_PATH}/lib/tinyusb/lib/fatfs/source   # fatfs lib
 )
 
 add_library(servomotor ../servomotor.c)

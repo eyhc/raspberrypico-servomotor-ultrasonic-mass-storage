@@ -160,8 +160,8 @@ DRESULT disk_read (
     }
 
     for (size_t c = 0; c < count; c++) {
-        if (sector + c < REAL_DISK_BLOCK_NUM) {
-            memcpy(&buff[c], ram_disk[sector + c], DISK_BLOCK_SIZE);
+        if (sector + c <= REAL_DISK_BLOCK_NUM) {
+            memcpy(&buff[c * DISK_BLOCK_SIZE], ram_disk[sector + c], DISK_BLOCK_SIZE);
         }
     }
 
