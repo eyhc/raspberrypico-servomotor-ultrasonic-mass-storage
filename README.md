@@ -12,6 +12,11 @@ git submodule update --init
 cd pico-sdk
 git submodule update --init 
 cd ..
+
+# if test only
+cd test
+# endif
+
 mkdir build
 cd build
 cmake ..
